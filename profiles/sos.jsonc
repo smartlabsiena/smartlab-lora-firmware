@@ -1,0 +1,8 @@
+{
+  // Profilo router S.O.S.: punto fisso con rete Wi-Fi aperta e pagina di emergenza. GPS spento (posizione fissa).
+  "USERPREFS_SMARTLAB_PROFILE": "1",
+  "USERPREFS_SMARTLAB_NAME_LONG": "S.O.S.",
+  "USERPREFS_SMARTLAB_NAME_SHORT": "SOS",
+  "USERPREFS_CONFIG_DEVICE_ROLE": "meshtastic_Config_DeviceConfig_Role_ROUTER_LATE",
+  "USERPREFS_CONFIG_GPS_MODE": "meshtastic_Config_PositionConfig_GpsMode_DISABLED"
+}

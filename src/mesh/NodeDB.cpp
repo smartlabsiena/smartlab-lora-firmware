@@ -1177,10 +1177,18 @@ void NodeDB::installDefaultConfig(bool preserveKey = false)
     config.display.enable_message_bubbles = true;
 #endif
 
+    // Smartlab LoRa: status LED heartbeat off by default, to save power (the user can switch it on again in the app)
+    config.device.led_heartbeat_disabled = true;
+
 #ifdef USERPREFS_CONFIG_DEVICE_ROLE
-    // Restrict ROUTER*, LOST AND FOUND roles for security reasons
+    // Restrict ROUTER*, LOST AND FOUND roles for security reasons. Smartlab LoRa: the Backbone and S.O.S. router
+    // profiles are our own builds and need a router role, so the restriction does not apply to them.
+#ifdef USERPREFS_SMARTLAB_PROFILE
+    if (false) {
+#else
     if (IS_ONE_OF(USERPREFS_CONFIG_DEVICE_ROLE, meshtastic_Config_DeviceConfig_Role_ROUTER,
                   meshtastic_Config_DeviceConfig_Role_ROUTER_LATE, meshtastic_Config_DeviceConfig_Role_LOST_AND_FOUND)) {
+#endif
         LOG_WARN("ROUTER roles restricted, fall back to CLIENT");
         config.device.role = meshtastic_Config_DeviceConfig_Role_CLIENT;
     } else {
@@ -1485,6 +1493,11 @@ void NodeDB::initConfigIntervals()
     config.power.min_wake_secs = default_min_wake_secs;
     config.power.sds_secs = default_sds_secs;
     config.power.wait_bluetooth_secs = default_wait_bluetooth_secs;
+#ifdef USERPREFS_SMARTLAB_PROFILE
+    // Smartlab LoRa: router roles sleep soon after boot and switch Bluetooth off after 1 s; keep it on for 15 min so a
+    // phone can connect to configure the board
+    config.power.wait_bluetooth_secs = 900;
+#endif
 
     config.display.screen_on_secs = default_screen_on_secs;
 
@@ -2384,7 +2397,13 @@ void NodeDB::installDefaultDeviceState()
 #ifdef USERPREFS_CONFIG_OWNER_LONG_NAME
     snprintf(owner.long_name, sizeof(owner.long_name), (const char *)USERPREFS_CONFIG_OWNER_LONG_NAME);
 #else
+#ifdef USERPREFS_SMARTLAB_NAME_LONG
+    // Profile default: "<profile name> ab12", e.g. "B.O.B. ab12" (the user can rename it afterwards)
+    snprintf(owner.long_name, sizeof(owner.long_name), "%s %04x", (const char *)USERPREFS_SMARTLAB_NAME_LONG,
+             getNodeNum() & 0x0ffff);
+#else
     snprintf(owner.long_name, sizeof(owner.long_name), "SmartLab %04x", getNodeNum() & 0x0ffff);
+#endif
 #endif
 
     clampLongName(owner.long_name); // vendor userprefs may exceed the local cap
@@ -2392,7 +2411,18 @@ void NodeDB::installDefaultDeviceState()
 #ifdef USERPREFS_CONFIG_OWNER_SHORT_NAME
     snprintf(owner.short_name, sizeof(owner.short_name), (const char *)USERPREFS_CONFIG_OWNER_SHORT_NAME);
 #else
+#ifdef USERPREFS_SMARTLAB_NAME_SHORT
+    // Profile default: prefix + last hex digits to fill 4 characters ("BOB" + "e" -> "BOBe"); numbered by the user later
+    {
+        char tail[8];
+        snprintf(tail, sizeof(tail), "%04x", getNodeNum() & 0x0ffff);
+        size_t pre = strlen((const char *)USERPREFS_SMARTLAB_NAME_SHORT);
+        snprintf(owner.short_name, sizeof(owner.short_name), "%s%s", (const char *)USERPREFS_SMARTLAB_NAME_SHORT,
+                 tail + (pre < 4 ? pre : 3));
+    }
+#else
     snprintf(owner.short_name, sizeof(owner.short_name), "%04x", getNodeNum() & 0x0ffff);
+#endif
 #endif
 
     snprintf(owner.id, sizeof(owner.id), "!%08x", getNodeNum()); // Default node ID now based on nodenum

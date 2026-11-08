@@ -366,6 +366,14 @@ with open(jsonLoc) as f:
     jsonStr = re.sub("//.*","", f.read(), flags=re.MULTILINE)
     userPrefs = json.loads(jsonStr)
 
+# Smartlab LoRa: per-profile factory defaults. An env may set `custom_smartlab_profile = <name>`; the keys of
+# profiles/<name>.jsonc are laid over userPrefs.jsonc (the profile wins), so each firmware profile
+# (B.O.B., S.O.S. router, Backbone) ships its own role, channels, preset and names.
+_profile = env.GetProjectOption("custom_smartlab_profile", "")
+if _profile:
+    with open(env["PROJECT_DIR"] + "/profiles/" + _profile + ".jsonc") as f:
+        userPrefs.update(json.loads(re.sub("//.*", "", f.read(), flags=re.MULTILINE)))
+
 # Channels::initDefaultChannel() applies a configured index as a whole, so resolve per-field
 # optionality here: any field the vendor left out gets the value that function would have kept.
 MAX_NUM_CHANNELS = 8

@@ -471,7 +471,12 @@ void PowerFSM_setup()
                              config.device.role == meshtastic_Config_DeviceConfig_Role_TAK_TRACKER ||
                              config.device.role == meshtastic_Config_DeviceConfig_Role_SENSOR;
 
+#ifdef SMARTLAB_SOS_ROUTER
+    // Smartlab LoRa: the S.O.S. router keeps its open Wi-Fi access point up, so it never goes to light sleep
+    if (false) {
+#else
     if ((isRouter || config.power.is_power_saving) && !isWifiAvailable() && !isTrackerOrSensor) {
+#endif
         powerFSM.add_timed_transition(&stateNB, &stateLS,
                                       Default::getConfiguredOrDefaultMs(config.power.min_wake_secs, default_min_wake_secs), NULL,
                                       "Min wake timeout");

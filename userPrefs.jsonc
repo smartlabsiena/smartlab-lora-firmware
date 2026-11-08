@@ -122,6 +122,12 @@
   // Smartlab LoRa: public emergency channel "S.O.S." on index 1 (factory default of a new or reset board).
   // The key is the public default one (a single byte 0x01 = "AQ=="), so anyone can read and write on it:
   // never use it for private messages. Uplink/downlink to MQTT and precise position are on by design.
+  // Smartlab LoRa: defaults common to all profiles (the profiles/*.jsonc files add or override)
+  "USERPREFS_CONFIG_LORA_REGION": "meshtastic_Config_LoRaConfig_RegionCode_EU_868",
+  "USERPREFS_LORACONFIG_MODEM_PRESET": "meshtastic_Config_LoRaConfig_ModemPreset_MEDIUM_FAST",
+  "USERPREFS_LORACONFIG_TX_POWER": "0",
+  "USERPREFS_CONFIG_DEVICE_REBROADCAST_MODE": "meshtastic_Config_DeviceConfig_RebroadcastMode_ALL",
+  "USERPREFS_CONFIG_DEVICE_NODE_INFO_BROADCAST_SECS": "10800",
   "USERPREFS_CHANNELS_TO_WRITE": "2",
   "USERPREFS_CHANNEL_1_NAME": "S.O.S.",
   "USERPREFS_CHANNEL_1_PSK": "{ 0x01 }",

@@ -41,6 +41,11 @@ python -m platformio run -e heltec-wireless-tracker
 
 Gli ambienti disponibili sono in `variants/`.
 
+## Flasher web e wiki
+
+- **Wiki e documentazione:** [smartlabsiena.it/smartlab-lora](https://smartlabsiena.it/smartlab-lora): guide, profili delle schede e istruzioni d'uso.
+- **Flasher web:** [smartlabsiena.it/flasher](https://smartlabsiena.it/flasher): installa dal browser, via cavo USB, il firmware **B.O.B.** (da computer, con Chrome o Edge). I profili router S.O.S. e Backbone sono pensati per i nodi fissi e si installano dai pacchetti `.bin` di questo repository.
+
 ## Licenza e attribuzioni
 
 Software libero sotto licenza **GPL-3.0** (vedi `LICENSE`). Il progetto nasce dal

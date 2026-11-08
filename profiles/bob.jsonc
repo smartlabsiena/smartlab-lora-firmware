@@ -1,0 +1,10 @@
+{
+  // Profilo B.O.B. (Bug-Out Bag): scheda personale nello zaino, con GPS.
+  "USERPREFS_SMARTLAB_PROFILE": "1",
+  "USERPREFS_SMARTLAB_NAME_LONG": "B.O.B.",
+  "USERPREFS_SMARTLAB_NAME_SHORT": "BOB",
+  "USERPREFS_CONFIG_DEVICE_ROLE": "meshtastic_Config_DeviceConfig_Role_CLIENT",
+  "USERPREFS_CONFIG_GPS_MODE": "meshtastic_Config_PositionConfig_GpsMode_ENABLED",
+  "USERPREFS_CONFIG_SMART_POSITION_ENABLED": "true",
+  "USERPREFS_CONFIG_POSITION_BROADCAST_INTERVAL": "900"
+}

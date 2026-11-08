@@ -1,0 +1,8 @@
+{
+  // Profilo Backbone: ripetitore alto che collega i quartieri, senza Wi-Fi di emergenza. GPS spento (posizione fissa).
+  "USERPREFS_SMARTLAB_PROFILE": "1",
+  "USERPREFS_SMARTLAB_NAME_LONG": "Backbone",
+  "USERPREFS_SMARTLAB_NAME_SHORT": "BB",
+  "USERPREFS_CONFIG_DEVICE_ROLE": "meshtastic_Config_DeviceConfig_Role_ROUTER",
+  "USERPREFS_CONFIG_GPS_MODE": "meshtastic_Config_PositionConfig_GpsMode_DISABLED"
+}

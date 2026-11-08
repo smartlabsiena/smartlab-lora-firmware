@@ -1,40 +1,49 @@
-<div align="center" markdown="1">
-
-<img src=".github/meshtastic_logo.png" alt="Meshtastic Logo" width="80"/>
-<h1>Meshtastic Firmware</h1>
-
-![GitHub release downloads](https://img.shields.io/github/downloads/meshtastic/firmware/total)
-[![CI](https://img.shields.io/github/actions/workflow/status/meshtastic/firmware/main_matrix.yml?branch=master&label=actions&logo=github&color=yellow)](https://github.com/meshtastic/firmware/actions/workflows/ci.yml)
-[![CLA assistant](https://cla-assistant.io/readme/badge/meshtastic/firmware)](https://cla-assistant.io/meshtastic/firmware)
-[![Fiscal Contributors](https://opencollective.com/meshtastic/tiers/badge.svg?label=Fiscal%20Contributors&color=deeppink)](https://opencollective.com/meshtastic/)
-[![Vercel](https://img.shields.io/static/v1?label=Powered%20by&message=Vercel&style=flat&logo=vercel&color=000000)](https://vercel.com?utm_source=meshtastic&utm_campaign=oss)
-[![MemBrowse](https://membrowse.com/badge.svg)](https://membrowse.com/public/meshtastic/firmware)
-
-<a href="https://trendshift.io/repositories/5524" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5524" alt="meshtastic%2Ffirmware | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-</div>
-
-</div>
-
 <div align="center">
-	<a href="https://meshtastic.org">Website</a>
-	-
-	<a href="https://meshtastic.org/docs/">Documentation</a>
+
+<img src=".github/smartlab_logo.png" alt="Smartlab LoRa" width="120"/>
+<h1>Smartlab LoRa — firmware</h1>
+
 </div>
 
-## Overview
+Firmware per schede LoRa ESP32, pensato per una rete di emergenza e di quartiere **off-grid**. Un progetto di
+**Smart Lab Siena**.
 
-This repository contains the official device firmware for Meshtastic, an open-source LoRa mesh networking project designed for long-range, low-power communication without relying on internet or cellular infrastructure. The firmware supports various hardware platforms, including ESP32, nRF52, RP2040/RP2350, and Linux-based devices.
+È un fork del [firmware Meshtastic](https://github.com/meshtastic/firmware) e resta **compatibile al 100% con il
+protocollo Meshtastic**: i nostri nodi parlano con quelli Meshtastic e con l'app
+[smartlab-lora-app](https://github.com/smartlabsiena/smartlab-lora-app). Il protocollo non è modificato.
 
-Meshtastic enables text messaging, location sharing, and telemetry over a decentralized mesh network, making it ideal for outdoor adventures, emergency preparedness, and remote operations.
+## Cosa cambia rispetto a Meshtastic
 
-### Get Started
+- Nome del nodo `SmartLab xxxx`, nome Bluetooth `SmartLab_xxxx`, host `SmartLab.local`, logo di avvio e testi a schermo.
+- Server web HTTPS spento di default (`SMARTLAB_NO_HTTPS`): sulle schede ESP32-S3 senza PSRAM, come l'Heltec Wireless
+  Tracker, lasciava poca memoria libera e faceva cadere l'API Wi-Fi (TCP 4403). Per il comportamento originale compilare
+  con `-DSMARTLAB_NO_HTTPS=0`.
+- Una riga di log al minuto con la memoria libera, per misurare quanta ne resta.
 
-- 🔧 **[Building Instructions](https://meshtastic.org/docs/development/firmware/build)** - Learn how to compile the firmware from source.
-- ⚡ **[Flashing Instructions](https://meshtastic.org/docs/getting-started/flashing-firmware/)** - Install or update the firmware on your device.
+I dettagli e le scelte di compatibilità sono in `SMARTLAB_NOTICE.md`.
 
-Join our community and help improve Meshtastic! 🚀
+## Schede provate
 
-## Stats
+Heltec Wireless Tracker V1.1 e Heltec Wireless Stick Lite V3 (ESP32-S3 + SX1262), regione EU_868.
 
-![Alt](https://repobeats.axiom.co/api/embed/8025e56c482ec63541593cc5bd322c19d5c0bdcf.svg "Repobeats analytics image")
+## In sviluppo
+
+Profili di ruolo per le schede: **router S.O.S.** (rete Wi-Fi aperta con pagina di aiuto e invio verso il canale
+radio S.O.S., sempre accesa), **backbone** e **B.O.B.** (scheda da zaino con GPS).
+
+## Compilare
+
+```bash
+python -m platformio run -e heltec-wireless-tracker
+```
+
+Gli ambienti disponibili sono in `variants/`. Per l'aggiornamento via Wi-Fi sulle ESP32-S3 serve il loader OTA nella
+partizione dedicata.
+
+## Licenza e attribuzioni
+
+Software libero sotto licenza **GPL-3.0** (vedi `LICENSE`). Il codice originale è di Meshtastic LLC e dei suoi
+collaboratori: le intestazioni di copyright sono mantenute.
+
+Meshtastic® è un marchio registrato di Meshtastic LLC. Questo progetto **non è affiliato né approvato** dal progetto
+Meshtastic. Il loro README originale è conservato in `README.meshtastic.md`.

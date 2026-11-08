@@ -48,4 +48,4 @@ Software libero sotto licenza **GPL-3.0** (vedi `LICENSE`). Il progetto nasce da
 Meshtastic e con la nostra app. Le intestazioni di copyright originali sono mantenute; le modifiche sono elencate in
 `SMARTLAB_NOTICE.md` e il README originale è in `README.meshtastic.md`.
 
-Meshtastic® è un marchio registrato di Meshtastic LLC; questo progetto non è affiliato né approvato da Meshtastic.
+Meshtastic® è un marchio registrato di Meshtastic LLC.

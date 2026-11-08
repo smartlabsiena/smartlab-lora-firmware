@@ -5,31 +5,30 @@
 
 </div>
 
-Firmware per schede LoRa ESP32, pensato per una rete di emergenza e di quartiere **off-grid**. Un progetto di
+Firmware per schede radio LoRa ESP32, pensato per una rete di emergenza e di quartiere **off-grid**. Un progetto di
 **Smart Lab Siena**.
 
-È un fork del [firmware Meshtastic](https://github.com/meshtastic/firmware) e resta **compatibile al 100% con il
-protocollo Meshtastic**: i nostri nodi parlano con quelli Meshtastic e con l'app
-[smartlab-lora-app](https://github.com/smartlabsiena/smartlab-lora-app). Il protocollo non è modificato.
+## A cosa serve
 
-## Cosa cambia rispetto a Meshtastic
+Ogni scheda è un nodo di una rete radio che non ha bisogno di internet né di ripetitori telefonici: riceve i messaggi
+degli altri nodi e li ripete, così raggiungono zone lontane anche con poche schede. Con la scheda si comunica dal
+telefono tramite l'app [smartlab-lora-app](https://github.com/smartlabsiena/smartlab-lora-app).
 
-- Nome del nodo `SmartLab xxxx`, nome Bluetooth `SmartLab_xxxx`, host `SmartLab.local`, logo di avvio e testi a schermo.
-- Server web HTTPS spento di default (`SMARTLAB_NO_HTTPS`): sulle schede ESP32-S3 senza PSRAM, come l'Heltec Wireless
-  Tracker, lasciava poca memoria libera e faceva cadere l'API Wi-Fi (TCP 4403). Per il comportamento originale compilare
-  con `-DSMARTLAB_NO_HTTPS=0`.
-- Una riga di log al minuto con la memoria libera, per misurare quanta ne resta.
+## Come funziona
 
-I dettagli e le scelte di compatibilità sono in `SMARTLAB_NOTICE.md`.
+- **Radio**: i messaggi viaggiano via LoRa (banda EU 868 MHz) da nodo a nodo; i canali sono cifrati con una chiave
+  condivisa tra chi ne fa parte. Ogni nodo mantiene l'elenco dei vicini e, se ha un GPS, ne annuncia la posizione.
+- **Collegamento al telefono**: via Bluetooth, USB o Wi-Fi (API sulla porta TCP 4403, annuncio mDNS `SmartLab.local`).
+- **Display**: sulle schede con schermo mostra nome del nodo, stato della rete, messaggi e memoria libera.
+- **Gateway**: con il Wi-Fi collegato, una scheda può inoltrare i messaggi della rete radio verso un broker MQTT e
+  viceversa, per fare da ponte verso internet.
+- **Aggiornamenti**: via USB oppure via Wi-Fi (OTA) con un loader dedicato nella partizione di avvio.
+- **Memoria**: il server web HTTPS è spento di default (`SMARTLAB_NO_HTTPS`) per lasciare memoria libera alle schede
+  ESP32-S3 senza PSRAM; si riattiva compilando con `-DSMARTLAB_NO_HTTPS=0`. Un log al minuto indica la memoria libera.
 
 ## Schede provate
 
 Heltec Wireless Tracker V1.1 e Heltec Wireless Stick Lite V3 (ESP32-S3 + SX1262), regione EU_868.
-
-## In sviluppo
-
-Profili di ruolo per le schede: **router S.O.S.** (rete Wi-Fi aperta con pagina di aiuto e invio verso il canale
-radio S.O.S., sempre accesa), **backbone** e **B.O.B.** (scheda da zaino con GPS).
 
 ## Compilare
 
@@ -37,13 +36,13 @@ radio S.O.S., sempre accesa), **backbone** e **B.O.B.** (scheda da zaino con GPS
 python -m platformio run -e heltec-wireless-tracker
 ```
 
-Gli ambienti disponibili sono in `variants/`. Per l'aggiornamento via Wi-Fi sulle ESP32-S3 serve il loader OTA nella
-partizione dedicata.
+Gli ambienti disponibili sono in `variants/`.
 
 ## Licenza e attribuzioni
 
-Software libero sotto licenza **GPL-3.0** (vedi `LICENSE`). Il codice originale è di Meshtastic LLC e dei suoi
-collaboratori: le intestazioni di copyright sono mantenute.
+Software libero sotto licenza **GPL-3.0** (vedi `LICENSE`). Il progetto nasce dal
+[firmware Meshtastic](https://github.com/meshtastic/firmware) e ne usa il protocollo, quindi dialoga con i nodi
+Meshtastic e con la nostra app. Le intestazioni di copyright originali sono mantenute; le modifiche sono elencate in
+`SMARTLAB_NOTICE.md` e il README originale è in `README.meshtastic.md`.
 
-Meshtastic® è un marchio registrato di Meshtastic LLC. Questo progetto **non è affiliato né approvato** dal progetto
-Meshtastic. Il loro README originale è conservato in `README.meshtastic.md`.
+Meshtastic® è un marchio registrato di Meshtastic LLC; questo progetto non è affiliato né approvato da Meshtastic.

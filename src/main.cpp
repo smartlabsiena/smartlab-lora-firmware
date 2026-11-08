@@ -295,9 +295,35 @@ const char *getDeviceName()
     if (strcmp(owner.short_name, name) != 0) {
         snprintf(name, sizeof(name), "%s_%02x%02x", owner.short_name, dmac[4], dmac[5]);
     } else {
-        snprintf(name, sizeof(name), "SmartLab_%02x%02x", dmac[4], dmac[5]);
+        snprintf(name, sizeof(name), "LoRa_%02x%02x", dmac[4], dmac[5]);
     }
     return name;
+}
+
+// Smartlab LoRa: network name (DHCP host and mDNS), "lora-ab13" by default or "<shortname>-ab13" once the user has chosen
+// a short name. Only a-z, 0-9 and '-' are kept, as a host name requires. Applied at the next restart, like the BLE name.
+const char *getDeviceHostName()
+{
+    uint8_t dmac[6] = {0};
+    getMacAddr(dmac);
+
+    static char host[40];
+    char suffix[8];
+    snprintf(suffix, sizeof(suffix), "%02x%02x", dmac[4], dmac[5]);
+
+    char base[16] = {0};
+    size_t n = 0;
+    if (strcmp(owner.short_name, suffix) != 0) {
+        for (const char *c = owner.short_name; *c && n < sizeof(base) - 1; c++) {
+            char ch = (*c >= 'A' && *c <= 'Z') ? (char)(*c + ('a' - 'A')) : *c;
+            if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9'))
+                base[n++] = ch;
+        }
+    }
+    if (n == 0)
+        strcpy(base, "lora");
+    snprintf(host, sizeof(host), "%s-%s", base, suffix);
+    return host;
 }
 
 uint32_t timeLastPowered = 0;

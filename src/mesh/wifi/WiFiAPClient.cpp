@@ -55,7 +55,7 @@ NTPClient timeClient(ntpUDP, config.network.ntp_server);
 uint8_t wifiDisconnectReason = 0;
 
 // Stores our hostname
-char ourHost[16];
+char ourHost[40];
 
 // To replace blocking wifi connect delay with a non-blocking sleep
 static unsigned long wifiReconnectStartMillis = 0;
@@ -90,7 +90,7 @@ static int32_t ethNetworkConnectedPoll()
             LOG_INFO("Ethernet IP changed (%u.%u.%u.%u), restarting mDNS", ip & 0xff, (ip >> 8) & 0xff, (ip >> 16) & 0xff,
                      (ip >> 24) & 0xff);
             MDNS.end();
-            if (MDNS.begin("SmartLab")) {
+            if (MDNS.begin(getDeviceHostName())) {
                 MDNS.addService("meshtastic", "tcp", SERVER_API_DEFAULT_PORT);
                 MDNS.addServiceTxt("meshtastic", "tcp", "shortname", String(owner.short_name));
                 MDNS.addServiceTxt("meshtastic", "tcp", "id", String(nodeDB->getNodeId().c_str()));
@@ -191,10 +191,10 @@ static void onNetworkConnected()
         LOG_INFO("Start network services");
 
         // start mdns
-        if (!MDNS.begin("SmartLab")) {
+        if (!MDNS.begin(getDeviceHostName())) {
             LOG_ERROR("mDNS setup failed");
         } else {
-            LOG_INFO("mDNS Host: SmartLab.local");
+            LOG_INFO("mDNS Host: %s.local", getDeviceHostName());
             MDNS.addService("meshtastic", "tcp", SERVER_API_DEFAULT_PORT);
 // ESPmDNS (ESP32) and SimpleMDNS (RP2040) have slightly different APIs for adding TXT records
 #ifdef ARCH_ESP32
@@ -387,9 +387,7 @@ bool initWifi()
             wifiPsw = NULL;
 
         if (*wifiName) {
-            uint8_t dmac[6];
-            getMacAddr(dmac);
-            snprintf(ourHost, sizeof(ourHost), "SmartLab-%02x%02x", dmac[4], dmac[5]);
+            snprintf(ourHost, sizeof(ourHost), "%s", getDeviceHostName());
 
             WiFi.mode(WIFI_STA);
             WiFi.setHostname(ourHost);

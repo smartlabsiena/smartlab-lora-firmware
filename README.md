@@ -18,7 +18,10 @@ telefono tramite l'app [smartlab-lora-app](https://github.com/smartlabsiena/smar
 
 - **Radio**: i messaggi viaggiano via LoRa (banda EU 868 MHz) da nodo a nodo; i canali sono cifrati con una chiave
   condivisa tra chi ne fa parte. Ogni nodo mantiene l'elenco dei vicini e, se ha un GPS, ne annuncia la posizione.
-- **Collegamento al telefono**: via Bluetooth, USB o Wi-Fi (API sulla porta TCP 4403, annuncio mDNS `SmartLab.local`).
+- **Collegamento al telefono**: via Bluetooth, USB o Wi-Fi (API sulla porta TCP 4403, annuncio mDNS `<nome>.local`).
+- **Nomi**: nome del nodo, nome breve e nome Bluetooth si personalizzano dall'app. Di default il nodo si chiama
+  `SmartLab xxxx` e il Bluetooth `LoRa_xxxx`; scelto un nome breve, Bluetooth e nome di rete diventano
+  `<nome breve>_xxxx` e `<nome breve>-xxxx.local` al riavvio (`xxxx` sono le ultime cifre dell'indirizzo hardware).
 - **Display**: sulle schede con schermo mostra nome del nodo, stato della rete, messaggi e memoria libera.
 - **Gateway**: con il Wi-Fi collegato, una scheda può inoltrare i messaggi della rete radio verso un broker MQTT e
   viceversa, per fare da ponte verso internet.

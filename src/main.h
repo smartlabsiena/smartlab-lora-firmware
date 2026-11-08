@@ -86,8 +86,11 @@ extern bool isVibrating;
 
 extern int TCPPort; // set by Portduino
 
-// Return a human readable string of the form "SmartLab_ab13"
+// Return a human readable string of the form "LoRa_ab13" (or "<shortname>_ab13")
 const char *getDeviceName();
+
+// Network host name of the form "lora-ab13" (or "<shortname>-ab13"), used for DHCP and mDNS
+const char *getDeviceHostName();
 
 extern uint32_t timeLastPowered;
 

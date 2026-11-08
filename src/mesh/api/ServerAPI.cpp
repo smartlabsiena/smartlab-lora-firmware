@@ -3,6 +3,9 @@
 #include "configuration.h"
 
 #include "ServerAPI.h"
+#if defined(SMARTLAB_SOS_ROUTER) && defined(ARCH_ESP32)
+#include "mesh/wifi/SosPortal.h"
+#endif
 #include "Throttle.h"
 #include "concurrency/LockGuard.h"
 #include <Arduino.h>
@@ -122,6 +125,14 @@ template <class T, class U> int32_t APIServerPort<T, U>::runOnce()
     auto client = U::accept();
 #else
     auto client = U::available();
+#endif
+#if defined(SMARTLAB_SOS_ROUTER) && defined(ARCH_ESP32)
+    // Smartlab LoRa: phones on the open S.O.S. access point must never reach the node API.
+    if (client && isSosApClient(client.remoteIP()[0], client.remoteIP()[1], client.remoteIP()[2])) {
+        LOG_WARN("[SOS] API connection from the open access point refused");
+        client.stop();
+        return 100;
+    }
 #endif
     if (client) {
         // Close any previous connection (see FIXME in header file)

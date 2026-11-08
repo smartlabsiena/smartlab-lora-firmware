@@ -119,6 +119,16 @@
   // "USERPREFS_RINGTONE_NAG_SECS": "60",
   // "USERPREFS_NODEINFO_REPLY_SUPPRESS_SECS": "43200",
   // "USERPREFS_UI_TEST_LOG": "true", // Test-only: emits `Screen: frame N/M name=... reason=...` log per UI transition (for the meshtastic-mcp ui test tier); off in release builds.
+  // Smartlab LoRa: public emergency channel "S.O.S." on index 1 (factory default of a new or reset board).
+  // The key is the public default one (a single byte 0x01 = "AQ=="), so anyone can read and write on it:
+  // never use it for private messages. Uplink/downlink to MQTT and precise position are on by design.
+  "USERPREFS_CHANNELS_TO_WRITE": "2",
+  "USERPREFS_CHANNEL_1_NAME": "S.O.S.",
+  "USERPREFS_CHANNEL_1_PSK": "{ 0x01 }",
+  "USERPREFS_CHANNEL_1_PRECISION": "32",
+  "USERPREFS_CHANNEL_1_IS_MUTED": "false",
+  "USERPREFS_CHANNEL_1_UPLINK_ENABLED": "true",
+  "USERPREFS_CHANNEL_1_DOWNLINK_ENABLED": "true",
   "USERPREFS_RINGTONE_RTTTL": "24:d=32,o=5,b=565:f6,p,f6,4p,p,f6,p,f6,2p,p,b6,p,b6,p,b6,p,b6,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,1p.,2p.,p",
   // "USERPREFS_NETWORK_IPV6_ENABLED": "1",
   "USERPREFS_TZ_STRING": "tzplaceholder                                         "

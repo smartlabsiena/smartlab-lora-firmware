@@ -26,6 +26,12 @@ uint32_t getPositionPrecisionForChannel(uint8_t channelIndex)
     uint32_t precision = getPositionPrecisionForChannel(ch);
 
     // Never send a precise position on a publicly-decryptable channel (key check is gated on > ceiling).
+#if defined(SMARTLAB_SOS_ROUTER)
+    // Smartlab LoRa: the public emergency channel "S.O.S." keeps the precision it was given (decision of the owner:
+    // a rescuer needs the exact place). Every other public-key channel stays clamped.
+    if (strcmp(ch.settings.name, "S.O.S.") == 0)
+        return precision;
+#endif
     if (precision > MAX_POSITION_PRECISION_PUBLIC_KEY && channels.usesPublicKey(channelIndex)) {
         precision = MAX_POSITION_PRECISION_PUBLIC_KEY;
     }

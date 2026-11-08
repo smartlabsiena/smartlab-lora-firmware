@@ -1,4 +1,7 @@
 #include "configuration.h"
+#if defined(SMARTLAB_SOS_ROUTER) && defined(ARCH_ESP32)
+#include "mesh/wifi/SosPortal.h"
+#endif
 #ifdef ARCH_PORTDUINO_WASM
 #include <emscripten.h>
 #endif
@@ -1237,6 +1240,10 @@ void setup()
     // Initialize Wifi
 #if HAS_WIFI
     initWifi();
+#endif
+#if defined(SMARTLAB_SOS_ROUTER) && defined(ARCH_ESP32)
+    // Smartlab LoRa: S.O.S. router, open access point + captive portal
+    startSosPortal();
 #endif
 
 #if HAS_ETHERNET

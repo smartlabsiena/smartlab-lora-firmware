@@ -240,11 +240,11 @@ void menuHandler::OnboardMessage()
     enum optionsNumbers { OK, got };
     BannerOverlayOptions bannerOptions;
 #if HAS_TFT
-    bannerOptions.message = "Welcome to Meshtastic!\nSwipe to navigate and\nlong press to select\nor open a menu.";
+    bannerOptions.message = "Benvenuto in Smartlab LoRa!\nSwipe to navigate and\nlong press to select\nor open a menu.";
 #elif defined(BUTTON_PIN)
-    bannerOptions.message = "Welcome to Meshtastic!\nClick to navigate and\nlong press to select\nor open a menu.";
+    bannerOptions.message = "Benvenuto in Smartlab LoRa!\nClick to navigate and\nlong press to select\nor open a menu.";
 #else
-    bannerOptions.message = "Welcome to Meshtastic!\nUse the Select button\nto open menus\nand make selections.";
+    bannerOptions.message = "Benvenuto in Smartlab LoRa!\nUse the Select button\nto open menus\nand make selections.";
 #endif
     bannerOptions.optionsArrayPtr = optionsArray;
     bannerOptions.optionsCount = 2;

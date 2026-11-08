@@ -1,5 +1,12 @@
 #include "configuration.h"
 #if !MESHTASTIC_EXCLUDE_WEBSERVER
+// Smartlab LoRa (modified from Meshtastic firmware, 2026-11-06): the HTTPS (TLS) web server is OFF by default. It left only
+// ~21 KB of heap free on ESP32-S3 boards without PSRAM (e.g. Heltec Wireless Tracker), which made the Wi-Fi API drop data
+// during the phone's initial config download. The phone apps use the plain TCP API on port 4403 (not HTTPS), so they are
+// unaffected. Build with -DSMARTLAB_NO_HTTPS=0 to get the original behaviour back.
+#ifndef SMARTLAB_NO_HTTPS
+#define SMARTLAB_NO_HTTPS 1
+#endif
 #include "NodeDB.h"
 #include "UptimeClock.h"
 #include "graphics/Screen.h"
@@ -252,6 +259,11 @@ static void taskCreateCert(void *parameter)
 
 void createSSLCert()
 {
+#if SMARTLAB_NO_HTTPS
+    // No TLS server: skip the (slow, memory hungry) certificate generation entirely.
+    isCertReady = true;
+    return;
+#endif
     if (isWifiAvailable() && !isCertReady) {
         bool runLoop = false;
 
@@ -324,6 +336,18 @@ int32_t WebServerThread::runOnce()
 
     handleWebResponse();
 
+#ifdef ARCH_ESP32
+    // Smartlab LoRa: report free heap once a minute while Wi-Fi is on, to see how much memory the API and web servers leave.
+    {
+        static uint32_t lastHeapLog = 0;
+        if (lastHeapLog == 0 || !Throttle::isWithinTimespanMs(lastHeapLog, 60000)) {
+            LOG_INFO("[Heap] free=%u min=%u largest-block=%u", (unsigned)ESP.getFreeHeap(), (unsigned)ESP.getMinFreeHeap(),
+                     (unsigned)ESP.getMaxAllocHeap());
+            lastHeapLog = millis();
+        }
+    }
+#endif
+
     if (requestRestart && (millis() / 1000) > requestRestart) {
         ESP.restart();
     }
@@ -335,8 +359,13 @@ void initWebServer()
 {
     LOG_DEBUG("Init Web Server");
 
+#if SMARTLAB_NO_HTTPS
+    secureServer = nullptr; // Smartlab LoRa: no HTTPS server
+    LOG_INFO("HTTPS web server disabled (SMARTLAB_NO_HTTPS)");
+#else
     // We can now use the new certificate to setup our server as usual.
     secureServer = new MeshHTTPSServer(cert, 443, MAX_HTTPS_CONNECTIONS);
+#endif
     insecureServer = new HTTPServer();
 
     registerHandlers(insecureServer, secureServer);

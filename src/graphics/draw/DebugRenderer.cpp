@@ -168,7 +168,7 @@ void drawFrameWiFi(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, i
         drawWiFiStatus(display, x, y, line);
     }
 
-    display->drawString(x + BASEUI_BODY_LR_MARGIN, getTextPositions(display)[line++] + y, "URL: http://meshtastic.local");
+    display->drawString(x + BASEUI_BODY_LR_MARGIN, getTextPositions(display)[line++] + y, "URL: http://smartlab.local");
 
     graphics::drawCommonFooter(display, x, y);
 

@@ -88,20 +88,22 @@ void registerHandlers(HTTPServer *insecureServer, HTTPSServer *secureServer)
 
     ResourceNode *nodeRoot = new ResourceNode("/*", "GET", &handleStatic);
 
-    // Secure nodes
-    secureServer->registerNode(nodeAPIv1ToRadioOptions);
-    secureServer->registerNode(nodeAPIv1ToRadio);
-    secureServer->registerNode(nodeAPIv1FromRadioOptions);
-    secureServer->registerNode(nodeAPIv1FromRadio);
-    secureServer->registerNode(nodeRestart);
-    secureServer->registerNode(nodeFormUpload);
-    secureServer->registerNode(nodeJsonScanNetworks);
-    secureServer->registerNode(nodeJsonFsBrowseStatic);
-    secureServer->registerNode(nodeJsonDelete);
-    secureServer->registerNode(nodeJsonReport);
-    secureServer->registerNode(nodeJsonNodes);
-    secureServer->registerNode(nodeAdmin);
-    secureServer->registerNode(nodeRoot); // This has to be last
+    // Secure nodes (Smartlab LoRa: secureServer is null when HTTPS is switched off, see SMARTLAB_NO_HTTPS)
+    if (secureServer) {
+        secureServer->registerNode(nodeAPIv1ToRadioOptions);
+        secureServer->registerNode(nodeAPIv1ToRadio);
+        secureServer->registerNode(nodeAPIv1FromRadioOptions);
+        secureServer->registerNode(nodeAPIv1FromRadio);
+        secureServer->registerNode(nodeRestart);
+        secureServer->registerNode(nodeFormUpload);
+        secureServer->registerNode(nodeJsonScanNetworks);
+        secureServer->registerNode(nodeJsonFsBrowseStatic);
+        secureServer->registerNode(nodeJsonDelete);
+        secureServer->registerNode(nodeJsonReport);
+        secureServer->registerNode(nodeJsonNodes);
+        secureServer->registerNode(nodeAdmin);
+        secureServer->registerNode(nodeRoot); // This has to be last
+    }
 
     // Insecure nodes
     insecureServer->registerNode(nodeAPIv1ToRadioOptions);
@@ -454,8 +456,7 @@ void handleStatic(HTTPRequest *req, HTTPResponse *res)
             has_set_content_type = true;
             res->setHeader("Content-Type", "text/html");
             if (!available) {
-                res->println("Web server is running.<br><br>The content you are looking for can't be found. Please see: <a "
-                             "href=https://meshtastic.org/docs/software/web-client/>FAQ</a>.<br><br><a "
+                res->println("Web server is running.<br><br>The content you are looking for can't be found. <br><br><a "
                              "href=/admin>admin</a>");
                 return;
             }
@@ -863,7 +864,7 @@ void handleAdmin(HTTPRequest *req, HTTPResponse *res)
     res->setHeader("Access-Control-Allow-Origin", "*");
     res->setHeader("Access-Control-Allow-Methods", "GET");
 
-    res->println("<h1>Meshtastic</h1>");
+    res->println("<h1>Smartlab LoRa</h1>");
     //    res->println("<a href=/admin/settings>Settings</a><br>");
     //    res->println("<a href=/admin/fs>Manage Web Content</a><br>");
     res->println("<a href=/json/report>Device Report</a><br>");
@@ -875,7 +876,7 @@ void handleRestart(HTTPRequest *req, HTTPResponse *res)
     res->setHeader("Access-Control-Allow-Origin", "*");
     res->setHeader("Access-Control-Allow-Methods", "GET");
 
-    res->println("<h1>Meshtastic</h1>");
+    res->println("<h1>Smartlab LoRa</h1>");
     res->println("Restarting");
 
     LOG_DEBUG("Restarted on HTTP(s) Request");
